@@ -3,7 +3,6 @@ package com.saungkertas.backyard;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
-import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.windowing.AfterWatermark;
 import org.apache.beam.sdk.transforms.windowing.FixedWindows;
@@ -19,14 +18,14 @@ public class MainPipeline {
                 .discardingFiredPanes()
                 .withAllowedLateness(Duration.standardMinutes(5));
 
-        PipelineOptions options = PipelineOptionsFactory.fromArgs(args).create();
+        MainPipelineOptions options = PipelineOptionsFactory.fromArgs(args).withValidation().as(MainPipelineOptions.class);
         Pipeline p = Pipeline.create(options);
 
         p.apply("Read Booking from Pubsub", PubsubIO.readStrings()
-                .fromSubscription("your_pubsub_subscription")
+                .fromSubscription(options.getPubsubSubscription())
                 .withTimestampAttribute("timestamp_value"))
                 .apply(window)
-                .apply(TextIO.write().to("your_downstream")
+                .apply(TextIO.write().to(options.getDownstreamGcs())
                         .withoutSharding()
                         .withSuffix(".txt")
                         .withWindowedWrites());
