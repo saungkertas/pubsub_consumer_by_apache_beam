@@ -32,7 +32,24 @@ $ ./gradlew clean build check
 ```
 
 ## How to use
-<to be updated>
+Fill all pipeline parameters in file deploy_pipeline.sh :<br/><br/>
+--project= <br/>
+--pubsubSubscription= <br/>
+--downstreamGcs=  <br/>
+--jobName= <br/>
+--runner=DataflowRunner <br/>
+--network= <br/>
+--subnetwork= <br/>
+--zone= <br/>
+--tempLocation= <br/>
+--stagingLocation= <br/>
+--filesToStage"
+
+run pipeline by execute file:
+```
+$ ./deploy_pipeline.sh
+
+```
 
 ### Author
 Syarif Hidayataullah
